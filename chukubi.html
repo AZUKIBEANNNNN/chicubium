@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHICUBIUM×SUPECT | NIPPEL FIRE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Serif+JP:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #05060a;
+      --bg2:     #0a0c14;
+      --panel:   #0d1018;
+      --border:  #1e2535;
+      --accent:  #ff6600;
+      --accent2: #ffcc00;
+      --text:    #c8d4e8;
+      --dim:     #4a5570;
+      --bright:  #e8f0ff;
+      --glow:    rgba(255,102,0,0.35);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 300;
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+    /* =============================================
+       HEADER（固定）
+    ============================================= */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: rgba(5,6,10,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,102,0,0.12);
+    }
+
+    /* ── ブランドロゴ（左） ── */
+    .hd-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    /* images/brand-logo.png が存在する場合に表示 */
+    .hd-brand-img {
+      height: 32px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    /* 画像なしフォールバック */
+    .hd-brand-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+    }
+
+    /* ── ゲームロゴ（中央） ── */
+    .hd-game-logo {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+    }
+    /* images/game-logo-sm.png（ヘッダー用小ロゴ） */
+    .hd-game-logo img {
+      height: 28px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(255,102,0,0.5));
+    }
+    /* 画像なしフォールバック */
+    .hd-game-logo span {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: var(--bright);
+    }
+
+    /* ── ナビ（右） ── */
+    .hd-nav {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .hd-nav a {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      color: var(--dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .hd-nav a:hover { color: var(--accent); }
+
+    /* =============================================
+       HERO
+    ============================================= */
+    .hero {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      overflow: hidden;
+      padding-top: 60px; /* header分 */
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(5,6,10,0.15) 0%, rgba(5,6,10,0.55) 55%, rgba(5,6,10,1) 100%),
+        url('images/hero.png') center / cover no-repeat;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px
+      );
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      text-align: center;
+      padding: 0 24px 72px;
+      animation: fadeUp 1s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.45em;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    /* ヒーローゲームロゴ（大） */
+    .hero-logo {
+      display: block;
+      margin: 0 auto 8px;
+      max-width: 500px;
+      width: 82%;
+    }
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(28px, 6.5vw, 76px);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      color: var(--bright);
+      text-shadow: 0 0 30px var(--glow), 0 0 70px rgba(255,80,0,0.3);
+      line-height: 1.05;
+    }
+    .hero-tagline {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      color: var(--dim);
+      margin-top: 14px;
+    }
+
+    /* ── ボトムバー（ヒーロー内ナビ） ── */
+    .bottom-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 3;
+      display: flex;
+      justify-content: center;
+      border-top: 1px solid rgba(255,102,0,0.15);
+      background: rgba(5,6,10,0.75);
+      backdrop-filter: blur(10px);
+    }
+    .bottom-bar a {
+      flex: 1; max-width: 180px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 15px 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.25em;
+      color: var(--dim); text-decoration: none;
+      border-right: 1px solid rgba(255,102,0,0.08);
+      transition: color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .bottom-bar a:last-child { border-right: none; }
+    .bottom-bar a::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 50%; right: 50%; height: 2px;
+      background: var(--accent);
+      transition: left 0.25s, right 0.25s;
+    }
+    .bottom-bar a:hover { color: var(--bright); background: rgba(255,102,0,0.05); }
+    .bottom-bar a:hover::after { left: 0; right: 0; }
+
+    /* =============================================
+       SECTION 共通
+    ============================================= */
+    .section { max-width: 860px; margin: 0 auto; padding: 80px 32px; }
+
+    .sec-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.4em; color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .sec-heading {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(18px, 3vw, 28px); font-weight: 700;
+      color: var(--bright); margin-bottom: 32px; letter-spacing: 0.06em;
+    }
+
+    /* =============================================
+       STORY セクション
+    ============================================= */
+    .story-section { border-bottom: 1px solid var(--border); }
+
+    /* VNスタイルのダイアログプレビュー */
+    .story-preview {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-top: 2px solid rgba(255,102,0,0.5);
+      padding: 0;
+      overflow: hidden;
+    }
+
+    /* 場所・章ラベルバー */
+    .story-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 20px;
+      background: rgba(255,102,0,0.06);
+      border-bottom: 1px solid var(--border);
+    }
+    .story-bar-chapter {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 0.3em;
+      color: var(--accent);
+    }
+    .story-bar-loc {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 0.12em;
+      color: var(--dim);
+    }
+
+    /* ダイアログ行 */
+    .story-lines { padding: 24px 24px 8px; }
+
+    .story-line {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .story-speaker {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.2em;
+      margin-bottom: 4px;
+    }
+    .story-speaker.system  { color: var(--accent); }
+    .story-speaker.char    { color: #7eb8ff; }
+    .story-speaker.player  { color: var(--accent2); }
+    .story-speaker.narr    { color: var(--dim); }
+
+    .story-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 8px; letter-spacing: 0.25em;
+      color: var(--dim); margin-bottom: 6px;
+    }
+
+    .story-txt {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 14px; font-weight: 400;
+      color: var(--text); line-height: 1.9;
+      white-space: pre-line;
+    }
+    .story-txt.narr {
+      font-style: italic; color: rgba(200,212,232,0.65);
+      font-size: 13px;
+    }
+
+    /* 選択肢 */
+    .story-choices {
+      margin: 4px 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .story-choice {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px; color: var(--dim);
+      padding: 8px 14px;
+      border: 1px solid rgba(255,102,0,0.15);
+      background: transparent;
+      cursor: default;
+    }
+    .story-choice.highlighted {
+      color: var(--text);
+      border-color: rgba(255,102,0,0.35);
+      background: rgba(255,102,0,0.04);
+    }
+
+    .story-fade {
+      height: 56px;
+      background: linear-gradient(to bottom, transparent, var(--panel));
+      margin-top: -32px;
+    }
+
+    .story-more {
+      text-align: center;
+      padding: 12px 0 20px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: var(--dim);
+    }
+
+    /* =============================================
+       ABOUT
+    ============================================= */
+    .about-section { border-bottom: 1px solid var(--border); }
+    .about-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: start;
+    }
+    .about-text p { font-size: 14px; margin-bottom: 16px; color: var(--text); }
+    .about-img-wrap { position: relative; }
+    .about-img-wrap::before {
+      content: ''; position: absolute; inset: 0;
+      border: 1px solid rgba(255,102,0,0.2);
+      transform: translate(6px,6px); z-index: -1;
+    }
+    .about-img-wrap img {
+      width: 100%; aspect-ratio: 16/9; object-fit: cover;
+      display: block; border: 1px solid var(--border);
+    }
+
+    /* =============================================
+       SCREENSHOTS
+    ============================================= */
+    .ss-section { border-bottom: 1px solid var(--border); }
+    .ss-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .ss-grid .ss-wide { grid-column: 1 / -1; }
+    .ss-item {
+      position: relative; aspect-ratio: 16/9;
+      overflow: hidden; background: var(--panel);
+      cursor: pointer; border: 1px solid var(--border);
+    }
+    .ss-item img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.4s ease, filter 0.3s;
+      filter: brightness(0.85);
+    }
+    .ss-item:hover img { transform: scale(1.04); filter: brightness(1); }
+    .ss-item::after {
+      content: attr(data-num); position: absolute;
+      bottom: 8px; left: 12px;
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      color: rgba(255,255,255,0.35); letter-spacing: 0.15em;
+      pointer-events: none;
+    }
+
+    /* =============================================
+       DOWNLOAD
+    ============================================= */
+    .dl-section { text-align: center; }
+    .dl-free {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(44px, 7vw, 80px); font-weight: 900;
+      color: var(--accent2);
+      text-shadow: 0 0 40px rgba(255,200,0,0.3);
+      letter-spacing: 0.04em; line-height: 1;
+      margin: 8px 0 36px;
+    }
+    .dl-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-family: 'Orbitron', sans-serif; font-size: 14px;
+      font-weight: 700; letter-spacing: 0.2em;
+      text-decoration: none; color: #05060a;
+      background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%);
+      padding: 18px 52px;
+      clip-path: polygon(14px 0%, 100% 0%, calc(100% - 14px) 100%, 0% 100%);
+      transition: filter 0.2s, transform 0.15s;
+      cursor: pointer; border: none;
+    }
+    .dl-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+    .dl-note {
+      margin-top: 20px;
+      font-family: 'Share Tech Mono', monospace; font-size: 11px;
+      color: var(--dim); letter-spacing: 0.12em; line-height: 2;
+    }
+    .spec-box {
+      display: inline-block; margin-top: 48px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+      padding: 28px 40px; text-align: left; min-width: 300px;
+    }
+    .spec-title {
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      letter-spacing: 0.35em; color: var(--accent); margin-bottom: 16px;
+    }
+    .spec-row { display: flex; gap: 20px; font-size: 13px; margin-bottom: 10px; }
+    .spec-row:last-child { margin-bottom: 0; }
+    .spec-row dt {
+      font-family: 'Share Tech Mono', monospace; font-size: 11px;
+      color: var(--dim); width: 90px; flex-shrink: 0;
+    }
+    .spec-row dd { color: var(--text); }
+
+    /* =============================================
+       FOOTER
+    ============================================= */
+    footer {
+      border-top: 1px solid var(--border); padding: 32px;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace; font-size: 10px;
+      color: var(--dim); letter-spacing: 0.2em;
+    }
+
+    /* =============================================
+       LIGHTBOX
+    ============================================= */
+    .lb {
+      display: none; position: fixed; inset: 0;
+      background: rgba(5,6,10,0.96); z-index: 200;
+      align-items: center; justify-content: center; padding: 32px;
+    }
+    .lb.on { display: flex; }
+    .lb img { max-width: 100%; max-height: 90vh; object-fit: contain; border: 1px solid rgba(255,102,0,0.3); }
+    .lb-close {
+      position: absolute; top: 20px; right: 28px;
+      font-family: 'Share Tech Mono', monospace; font-size: 22px;
+      color: var(--accent); cursor: pointer; background: none; border: none; line-height: 1;
+    }
+
+    /* =============================================
+       RESPONSIVE
+    ============================================= */
+    @media (max-width: 680px) {
+      .hd-nav { display: none; }
+      .hd-game-logo { display: none; }
+      .about-body { grid-template-columns: 1fr; gap: 28px; }
+      .ss-grid { grid-template-columns: 1fr; }
+      .ss-grid .ss-wide { grid-column: auto; }
+      .section { padding: 60px 20px; }
+      .bottom-bar a { font-size: 9px; padding: 13px 4px; max-width: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- =============================================
+     HEADER
+============================================= -->
+<header>
+
+  <!-- ブランドロゴ（左）: images/brand-logo.png -->
+  <a class="hd-brand" href="#top">
+    <img
+      class="hd-brand-img"
+      src="images/brand-logo.png"
+      alt="NIPPEL FIRE"
+      onerror="this.style.display='none'; document.getElementById('hd-brand-txt').style.display='block';"
+    />
+    <span id="hd-brand-txt" class="hd-brand-text" style="display:none;">NIPPEL FIRE</span>
+  </a>
+
+  <!-- ゲームロゴ（中央）: images/game-logo-sm.png （ヘッダー用小ロゴ） -->
+  <div class="hd-game-logo">
+    <img
+      src="images/game-logo-sm.png"
+      alt="CHICUBIUM×SUPECT"
+      onerror="this.style.display='none'; document.getElementById('hd-game-txt').style.display='block';"
+    />
+    <span id="hd-game-txt" class="hd-brand-text" style="display:none; font-size:12px; color:var(--bright);">CHICUBIUM×SUPECT</span>
+  </div>
+
+  <!-- ナビ（右） -->
+  <ul class="hd-nav">
+    <li><a href="#story">STORY</a></li>
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#screenshots">SCREENSHOTS</a></li>
+    <li><a href="#download">DOWNLOAD</a></li>
+  </ul>
+
+</header>
+
+<!-- =============================================
+     HERO
+============================================= -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+
+  <div class="hero-content">
+    <p class="brand-label">NIPPEL FIRE</p>
+
+    <!-- ゲームロゴ大: images/game-logo.png -->
+    <img
+      class="hero-logo"
+      src="images/game-logo.png"
+      alt="CHICUBIUM×SUPECT"
+      onerror="this.style.display='none'; document.getElementById('hero-title').style.display='block';"
+    />
+    <h1 id="hero-title" class="hero-title" style="display:none;">CHICUBIUM×SUPECT</h1>
+
+    <p class="hero-tagline">// BUILD. SUSPECT. DETONATE. //</p>
+  </div>
+
+  <nav class="bottom-bar">
+    <a href="#story">STORY</a>
+    <a href="#about">ABOUT</a>
+    <a href="#screenshots">SCREENSHOTS</a>
+    <a href="#download">DOWNLOAD</a>
+  </nav>
+</section>
+
+<!-- =============================================
+     STORY
+============================================= -->
+<div id="story" class="story-section">
+  <div class="section">
+    <p class="sec-label">STORY</p>
+    <h2 class="sec-heading">序章 — 目覚め</h2>
+
+    <div class="story-preview">
+      <!-- 場所バー -->
+      <div class="story-bar">
+        <span class="story-bar-chapter">PROLOGUE</span>
+        <span class="story-bar-loc">シリウス学園 — 指揮官室</span>
+      </div>
+
+      <div class="story-lines">
+
+        <!-- SYSTEM -->
+        <div class="story-line">
+          <span class="story-tag">SYSTEM BOOT</span>
+          <p class="story-txt narr">……意識が戻る。<br>天井が見える。薄暗い、金属の背景。</p>
+        </div>
+
+        <!-- ナレーション -->
+        <div class="story-line">
+          <p class="story-txt narr">頭が重い。記憶を探ろうとするが、霧がかかっているようで何も掴めない。<br>自分の名前——それだけはわかる。</p>
+        </div>
+
+        <!-- キャラ：シーグ -->
+        <div class="story-line">
+          <span class="story-speaker char">シーグ</span>
+          <span class="story-tag">SIRIUS — SQUAD LEADER</span>
+          <p class="story-txt">……目が覚めましたか、指揮官。</p>
+        </div>
+
+        <div class="story-line">
+          <span class="story-speaker char">シーグ</span>
+          <p class="story-txt">私はシーグ。あなたの部隊の副隊長を務めています。<br>……ご自分の置かれた状況を、説明しても構いませんか？</p>
+        </div>
+
+        <!-- 選択肢 -->
+        <div class="story-line">
+          <span class="story-speaker player">指揮官</span>
+          <span class="story-tag">COMMANDER — CHOICE</span>
+          <div class="story-choices">
+            <div class="story-choice highlighted">1. ああ、頼む。ここはどこだ？</div>
+            <div class="story-choice">2. シーグ……？ 以前の俺を知っているのか？</div>
+            <div class="story-choice">3. 状況より先に、鏡を貸してくれ</div>
+            <div class="story-choice">4. ……何も思い出せない。何もかもだ</div>
+          </div>
+        </div>
+
+        <!-- 場所変化 -->
+        <div class="story-bar" style="margin: 0 -24px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+          <span class="story-bar-chapter">CHAPTER 01</span>
+          <span class="story-bar-loc">シリウス学園 — 廊下</span>
+        </div>
+        <div style="height:16px;"></div>
+
+        <!-- ナレーション -->
+        <div class="story-line">
+          <p class="story-txt narr">シーグに連れられ、学園内を歩く。<br>冷たいコンクリートの壁には、無数の銃痕が刻まれていた。</p>
+        </div>
+
+        <!-- キャラ：フィア -->
+        <div class="story-line">
+          <span class="story-speaker char">フィア</span>
+          <span class="story-tag">SIRIUS — SCOUT</span>
+          <p class="story-txt">あっ——！指揮官！本当に、本当に起きたんですね！</p>
+        </div>
+
+        <div class="story-line">
+          <span class="story-speaker char">フィア</span>
+          <p class="story-txt">私、フィアです！偵察担当の！……覚えて、ないですよね。</p>
+        </div>
+
+        <div class="story-line">
+          <span class="story-speaker char">フィア</span>
+          <p class="story-txt">あの時、指揮官が私を突き飛ばしてくれなかったら……。<br>私の代わりに、指揮官が弾を浴びて……。</p>
+        </div>
+
+      </div>
+
+      <!-- フェードアウト -->
+      <div class="story-fade"></div>
+      <div class="story-more">— CONTINUE IN GAME —</div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     ABOUT
+============================================= -->
+<div id="about" class="about-section">
+  <div class="section">
+    <p class="sec-label">ABOUT THE GAME</p>
+    <h2 class="sec-heading">謎と疑惑が交差する戦場</h2>
+
+    <div class="about-body">
+      <div class="about-text">
+        <p>
+          <strong style="color:var(--bright);">CHICUBIUM×SUPECT</strong>は、NIPPEL FIREが贈る新感覚タクティカルアクション。
+          謎の物質「CHICUBIUM」を駆使し、疑惑に満ちた戦場を生き抜け。
+        </p>
+        <p>
+          独自の「SUSPECT SYSTEM」により、味方さえも信頼できない極限の心理戦が展開される。
+          記憶を失った指揮官として、シリウスの真実に迫れ。
+        </p>
+        <p>
+          完全無料でプレイ可能。今すぐダウンロードして体験しよう。
+        </p>
+      </div>
+
+      <div class="about-img-wrap">
+        <!-- images/thumbnail.png -->
+        <img
+          src="images/thumbnail.png"
+          alt="ゲーム画像"
+          onerror="this.style.background='var(--panel)'; this.style.minHeight='160px'; this.removeAttribute('src');"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     SCREENSHOTS
+============================================= -->
+<div id="screenshots" class="ss-section">
+  <div class="section">
+    <p class="sec-label">SCREENSHOTS</p>
+    <h2 class="sec-heading">スクリーンショット</h2>
+
+    <div class="ss-grid">
+      <!-- images/screenshot*.png -->
+      <div class="ss-item ss-wide" data-num="01" onclick="lb('images/screenshot1.png')">
+        <img src="images/screenshot1.png" alt="SS1"
+             onerror="this.parentElement.style.minHeight='150px'; this.style.display='none';" />
+      </div>
+      <div class="ss-item" data-num="02" onclick="lb('images/screenshot2.png')">
+        <img src="images/screenshot2.png" alt="SS2"
+             onerror="this.parentElement.style.minHeight='110px'; this.style.display='none';" />
+      </div>
+      <div class="ss-item" data-num="03" onclick="lb('images/screenshot3.png')">
+        <img src="images/screenshot3.png" alt="SS3"
+             onerror="this.parentElement.style.minHeight='110px'; this.style.display='none';" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     DOWNLOAD
+============================================= -->
+<div id="download" class="dl-section">
+  <div class="section">
+    <p class="sec-label">DOWNLOAD</p>
+    <h2 class="sec-heading">ダウンロード</h2>
+
+    <p class="sec-label" style="color:var(--dim); letter-spacing:0.2em;">PRICE</p>
+    <div class="dl-free">無料ダウンロード</div>
+
+    <!-- downloads/CHICUBIUM_SUPECT_Setup.exe -->
+    <a class="dl-btn" href="https://github.com/AZUKIBEANNNNN/chicubium/releases/download/v1.0/CHICUBIUM_SUPECT_Setup.exe" download>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 16l-6-6h4V4h4v6h4l-6 6zm-7 4h14v-2H5v2z"/>
+      </svg>
+      DOWNLOAD NOW
+    </a>
+
+    <p class="dl-note">
+      対応OS: Windows 10 以降（64bit）<br>
+      インストーラー形式（.exe）／ セットアップウィザードに従ってインストール
+    </p>
+
+    <div>
+      <dl class="spec-box">
+        <p class="spec-title">▸ 動作環境</p>
+        <div class="spec-row"><dt>OS</dt><dd>Windows 10 以降（64bit）</dd></div>
+        <div class="spec-row"><dt>メモリ</dt><dd>8 GB 以上</dd></div>
+        <div class="spec-row"><dt>ストレージ</dt><dd>1.1 GB 以上の空き容量</dd></div>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<!-- =============================================
+     FOOTER
+============================================= -->
+<footer>
+  © 2026 NIPPEL FIRE — CHICUBIUM×SUPECT. ALL RIGHTS RESERVED.
+</footer>
+
+<!-- =============================================
+     LIGHTBOX
+============================================= -->
+<div class="lb" id="lightbox" onclick="closelb()">
+  <button class="lb-close" onclick="closelb()">✕</button>
+  <img id="lb-img" src="" alt="" onclick="event.stopPropagation()" />
+</div>
+
+<script>
+  function lb(src) {
+    document.getElementById('lb-img').src = src;
+    document.getElementById('lightbox').classList.add('on');
+  }
+  function closelb() {
+    document.getElementById('lightbox').classList.remove('on');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closelb(); });
+
+  // スムーズスクロール（ヘッダー60px分を補正）
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const el = document.querySelector(a.getAttribute('href'));
+      if (el) {
+        e.preventDefault();
+        const top = el.getBoundingClientRect().top + window.scrollY - 60;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // ヘッダー透明度（スクロール対応）
+  const hdr = document.querySelector('header');
+  window.addEventListener('scroll', () => {
+    hdr.style.background = window.scrollY > 40
+      ? 'rgba(5,6,10,0.97)'
+      : 'rgba(5,6,10,0.88)';
+  });
+</script>
+</body>
+</html>
